@@ -1,5 +1,5 @@
 # Build Stage:
-FROM golang:1.18
+FROM golang:1.18 as builder
 
 ## Install build dependencies.
 RUN apt-get update && \
@@ -14,3 +14,7 @@ RUN git submodule init
 RUN git submodule update
 RUN go mod tidy
 RUN make build
+
+# Package Stage
+FROM debian:bookworm-slim
+COPY --from=builder /kconnect/kconnect /
